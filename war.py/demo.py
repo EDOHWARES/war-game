@@ -51,8 +51,101 @@ class Deck:
             self.deal_one()
 
 
-new_deck = Deck()
-print(len(new_deck.all_cards))
-new_deck.empty_deck()
-print(len(new_deck.all_cards))
+
+class Player:
+
+    def __init__(self, name):
+        self.name = name
+        self.all_cards = []
+
+    def remove_one(self):
+        return self.all_cards.pop(0)
+
+    def add_cards(self, new_cards):
+        if type(new_cards) == type([]):
+            self.all_cards.extend(new_cards)
+        else:
+            self.all_cards.append(new_cards)
+
+    def __str__(self) -> str:
+        return f"Player {self.name} has {len(self.all_cards)} cards"
+    
+
+
+# GAME SETUP
+    
+# Instantiate both players
+player1 = Player("One")
+player2 = Player("Two")
+
+# Instantiate new deck and shuffle
+newDeck = Deck()
+newDeck.shuffle()
+
+# Sharing the deck cards equally for both players
+for x in range(26):
+    player1.add_cards(newDeck.deal_one())
+    player2.add_cards(newDeck.deal_one())
+
+game_on = True
+
+round = 0
+
+while game_on:
+    round += 1
+    print(f"Round: {round}")
+
+    # Checking if any of the Player is out of cards, so as to stop the game
+    if len(player1.all_cards) == 0:
+        print("Player One is out of Cards!, Player Two Wins!")
+        game_on = False
+        break
+    elif len(player2.all_cards) == 0:
+        print("Player Two is out of Cards!, Player One Wins!")
+        game_on = False
+        break
+    else:
+        pass
+
+    # Playing cards to the table
+    player1_played_cards = []
+    player1_played_cards.append(player1.remove_one())
+
+    player2_played_cards = []
+    player2_played_cards.append(player2.remove_one())
+
+    at_war = True
+
+    while at_war:
+        if player1_played_cards[-1].value > player2_played_cards[-1].value:
+            player1.add_cards(player1_played_cards)
+            player1.add_cards(player2_played_cards)
+            at_war = False
+        elif player2_played_cards[-1].value < player2_played_cards[-1].value:
+            player2.add_cards(player1_played_cards)
+            player2.add_cards(player2_played_cards)
+            at_war = False
+        else:
+            print("WAR!")
+
+            if len(player1.all_cards) < 5:
+                print("Player One unable to declare war")
+                print("PLAYER TWO WINS!")
+                game_on = False
+                break
+            elif len(player2.all_cards) < 5:
+                print("Player Two unable to declare war")
+                print("PLAYER ONE WINS!")
+                game_on = False
+                break
+            else:
+                for num in range(5):
+                    player1_played_cards.append(player1.remove_one())
+                    player2_played_cards.append(player2.remove_one())
+
+
+
+
+    
+
 
